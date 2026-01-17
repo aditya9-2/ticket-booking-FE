@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom"
+
 const Navbar = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="sticky top-0 z-50 bg-white/30">
 
@@ -20,8 +24,12 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex justify-center items-center gap-5">
-                    <button className="bg-black text-white p-2 hover:cursor-pointer rounded-full">sign up</button>
-                    <button className="border border-gray-300 text-black p-2 hover:cursor-pointer rounded-full">sign in</button>
+                    <button className="bg-black text-white p-2 hover:cursor-pointer rounded-full"
+                        onClick={() => navigate('/signup')}
+                    >sign up</button>
+                    <button className="border border-gray-300 text-black p-2 hover:cursor-pointer rounded-full"
+                        onClick={() => navigate('/signin')}
+                    >sign in</button>
                 </div>
             </div>
 

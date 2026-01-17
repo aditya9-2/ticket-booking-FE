@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div className='min-h-screen'>
-      <Navbar />
+      
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path='/signup' element={<SignupPage />} />
