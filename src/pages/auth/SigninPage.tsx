@@ -1,9 +1,49 @@
 import { useNavigate } from "react-router-dom";
 import CustomInput from "../../components/CustomInput";
+import { useState } from "react";
+import axios from "axios";
 
 const SigninPage = () => {
 
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signin`,{
+        email,
+        password
+      });
+      const data = res.data;
+
+      if(!data) {
+        console.error(`Failed to fetch signin API`);
+        setIsLoading(false);
+        return;
+      }
+
+      const token = res.data.token;
+
+      if(!token) {
+        alert("Login failed: No token received");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      navigate("/");
+      
+    } catch (error) {
+      
+    } finally{
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-gray-50 h-screen flex justify-center items-center p-4">
@@ -22,25 +62,32 @@ const SigninPage = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
          
           <CustomInput
             label="Email Address"
             type="email"
             placeholder="name@company.com"
+            onChange={(e)=> setEmail(e.target.value)}
           />
 
           <CustomInput
             label="Password"
             type="password"
             placeholder="••••••••"
+            onChange={(e)=> setPassword(e.target.value)}
           />
 
-          <button className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors mt-2">
-            Create Account
+          <button
+            type="submit" // Ensure button type is submit
+            disabled={isLoading} // Prevent double-clicks
+            className={`w-full bg-black text-white font-bold py-3 rounded-xl transition-colors mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
+              }`}
+          >
+            {isLoading ? "Signing in..." : "Signin here"}
           </button>
           <p className="text-gray-500">Don't have an account? <span className="text-black font-bold cursor-pointer" onClick={() => navigate('/signup')}>signup</span> here</p>
-        </div>
+        </form>
       </div>
     </div>
   )
