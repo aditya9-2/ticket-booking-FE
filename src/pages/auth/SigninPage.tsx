@@ -81,7 +81,7 @@ const SigninPage = () => {
           <button
             type="submit" // Ensure button type is submit
             disabled={isLoading} // Prevent double-clicks
-            className={`w-full bg-black text-white font-bold py-3 rounded-xl transition-colors mt-2 ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
+            className={`w-full bg-black text-white font-bold py-3 rounded-xl transition-colors mt-2 hover:cursor-pointer ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
               }`}
           >
             {isLoading ? "Signing in..." : "Signin here"}

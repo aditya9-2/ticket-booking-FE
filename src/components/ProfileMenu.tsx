@@ -7,7 +7,7 @@ const ProfileMenu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/signin");
+    navigate("/");
     window.location.reload();
   };
 

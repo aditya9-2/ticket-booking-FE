@@ -29,13 +29,13 @@ const Navbar = () => {
                     {!token ? (
                         <>
                             <button
-                                className="bg-black text-white px-4 py-2 rounded-full"
+                                className="bg-black text-white px-4 py-2 rounded-full hover:cursor-pointer"
                                 onClick={() => navigate("/signup")}
                             >
                                 Sign up
                             </button>
                             <button
-                                className="border border-gray-300 px-4 py-2 rounded-full"
+                                className="border border-gray-300 px-4 py-2 rounded-full hover:cursor-pointer"
                                 onClick={() => navigate("/signin")}
                             >
                                 Sign in
