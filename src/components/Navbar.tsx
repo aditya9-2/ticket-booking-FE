@@ -9,7 +9,7 @@ const Navbar = () => {
         <div className="sticky top-0 z-50 bg-white/30">
 
             <div className="p-5 flex justify-between items-center">
-                <div className=" font-bold text-2xl">
+                <div className=" font-bold text-2xl cursor-pointer" onClick={() => navigate('/')}>
                     BOOKTHESHOW<span className="text-black">.</span>
                 </div>
 
@@ -19,9 +19,9 @@ const Navbar = () => {
                         border border-white/30 
                         shadow-lg">
                     <ul className="flex items-center gap-6 font-medium">
-                        <li className="hover:opacity-80 cursor-pointer">Events</li>
-                        <li className="hover:opacity-80 cursor-pointer">About</li>
-                        <li className="hover:opacity-80 cursor-pointer">Contact us</li>
+                        <li className="hover:opacity-80 cursor-pointer" onClick={() => navigate('/events')}>Events</li>
+                        <li className="hover:opacity-80 cursor-pointer" onClick={() => navigate('/about')}>About</li>
+                        <li className="hover:opacity-80 cursor-pointer" onClick={() => navigate('/contact')}>Contact us</li>
                     </ul>
                 </div>
 
