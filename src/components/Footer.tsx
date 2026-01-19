@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 const Footer = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="w-full border-t border-b border-black/20 py-16">
       <div className="max-w-7xl mx-auto px-6">
@@ -19,8 +23,8 @@ const Footer = () => {
             <div>
               <h3 className="font-semibold mb-4">Explore</h3>
               <ul className="space-y-3 text-sm text-gray-600">
-                <li className="hover:text-black cursor-pointer">Events</li>
-                <li className="hover:text-black cursor-pointer">About</li>
+                <li className="hover:text-black cursor-pointer" onClick={() => navigate('/events')}>Events</li>
+                <li className="hover:text-black cursor-pointer" onClick={() => navigate('/about')}>About</li>
               </ul>
             </div>
 
@@ -28,7 +32,7 @@ const Footer = () => {
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-3 text-sm text-gray-600">
-                <li className="hover:text-black cursor-pointer">Contact Us</li>
+                <li className="hover:text-black cursor-pointer" onClick={() => navigate('/contact')}>Contact Us</li>
                 <li className="hover:text-black cursor-pointer">Refunds</li>
               </ul>
             </div>
