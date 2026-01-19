@@ -2,7 +2,7 @@ interface EventCardProps {
   image: string;
   title: string;
   date: string;
-  onBook: () => void;
+  onBook?: () => void;
 }
 
 const Card = ({ image, title, date, onBook }: EventCardProps) => {
