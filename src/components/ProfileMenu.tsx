@@ -22,7 +22,13 @@ const ProfileMenu = () => {
 
       {open && (
         <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-xl overflow-hidden">
-         
+         <button
+            className="w-full text-left px-4 py-2 text-black hover:bg-gray-100"
+            onClick={() => navigate('/my-bookings')}
+          >
+            My bookings
+          </button>
+
           <button
             className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
             onClick={handleLogout}
