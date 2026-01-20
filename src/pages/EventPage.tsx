@@ -28,7 +28,6 @@ const EventPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  /* ------------------------------ FETCH EVENT ------------------------------ */
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -50,7 +49,6 @@ const EventPage = () => {
     fetchEvent();
   }, [eventId]);
 
-  /* ------------------------------ BOOKING ------------------------------ */
   const handleBooking = async () => {
     if (!event || !selectedSection) return;
 
@@ -80,17 +78,16 @@ const EventPage = () => {
 
       alert("Booking successful 🎉");
 
-      // Optimistic update
       setEvent((prev) =>
         prev
           ? {
-              ...prev,
-              sections: prev.sections.map((s) =>
-                s._id === selectedSection._id
-                  ? { ...s, remaining: s.remaining - quantity }
-                  : s
-              ),
-            }
+            ...prev,
+            sections: prev.sections.map((s) =>
+              s._id === selectedSection._id
+                ? { ...s, remaining: s.remaining - quantity }
+                : s
+            ),
+          }
           : prev
       );
 
@@ -104,7 +101,6 @@ const EventPage = () => {
     }
   };
 
-  /* ------------------------------ STATES ------------------------------ */
   if (loading) {
     return <p className="text-center py-20">Loading event...</p>;
   }
@@ -119,7 +115,6 @@ const EventPage = () => {
     ? selectedSection.price * quantity
     : minPrice;
 
-  /* ------------------------------ UI ------------------------------ */
   return (
     <>
       <Navbar />
@@ -149,10 +144,9 @@ const EventPage = () => {
                     setQuantity(1);
                   }}
                   className={`flex justify-between items-center border rounded-xl p-4 transition
-                    ${
-                      soldOut
-                        ? "opacity-50 cursor-not-allowed"
-                        : "cursor-pointer hover:shadow-md"
+                    ${soldOut
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer hover:shadow-md"
                     }
                     ${isSelected ? "border-black shadow-md" : ""}
                   `}
@@ -227,10 +221,9 @@ const EventPage = () => {
               disabled={!selectedSection || bookingLoading}
               onClick={handleBooking}
               className={`w-full py-3 rounded-full font-semibold
-                ${
-                  selectedSection
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                ${selectedSection
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
                 }
               `}
             >
