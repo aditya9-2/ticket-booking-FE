@@ -8,6 +8,7 @@ import ContactPage from './pages/ContactPage'
 import EventPage from './pages/EventPage'
 import HomePage from './pages/Homepage'
 import { Route, Routes } from "react-router"
+import MyBookingPage from './pages/MyBookingPage'
 function App() {
 
 
@@ -22,7 +23,8 @@ function App() {
         <Route path='/contact' element={<ContactPage />} />
         <Route path='/events' element={<AllEventsPage />} />
         <Route path='/event/:eventId' element={<EventPage />} />
-        
+        <Route path='/my-bookings' element={<MyBookingPage />} />
+
       </ Routes>
     </div>
   )
