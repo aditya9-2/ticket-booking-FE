@@ -10,6 +10,7 @@ import HomePage from './pages/Homepage'
 import { Route, Routes } from "react-router"
 import MyBookingPage from './pages/MyBookingPage'
 import ProtectedRouteProvider from './provider/ProtectedRouteProvider'
+import { ToastContainer } from 'react-toastify'
 function App() {
 
 
@@ -30,6 +31,8 @@ function App() {
           <Route path='/my-bookings' element={<MyBookingPage />} />
         </Route>
       </ Routes>
+
+      <ToastContainer/>
     </div>
   )
 }
