@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import TicketCard from "../components/TicketCard";
 import { generateQrCode } from "../utils/generateQrCode";
+import { toast } from "react-toastify";
+import MyBookingsSkeleton from "../components/skeletons/MyBookingsSkeleton";
 
 interface Booking {
   _id: string;
@@ -21,6 +23,7 @@ const MyBookingPage = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) return;
 
@@ -40,7 +43,18 @@ const MyBookingPage = () => {
 
         setBookings(enriched);
       } catch (err) {
+        setLoading(false);
         console.error(err);
+        toast.error(`something went wrong`, {
+          position: 'top-right',
+          draggable: true,
+          autoClose: 3500,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light',
+        });
+
       } finally {
         setLoading(false);
       }
@@ -53,7 +67,7 @@ const MyBookingPage = () => {
     return (
       <>
         <Navbar />
-        <p className="text-center py-32 text-gray-500">Loading bookings...</p>
+        <MyBookingsSkeleton />
         <Footer />
       </>
     );

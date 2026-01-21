@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { toast } from "react-toastify";
+import MainEventSkeleton from "../components/skeletons/MainEventSkeleton";
 
 interface Section {
   _id: string;
@@ -32,6 +33,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
+        setLoading(true);
         const baseURL = import.meta.env.VITE_API_BASE_URL;
         const res = await axios.get(`${baseURL}/event/all`);
 
@@ -41,6 +43,7 @@ const EventPage = () => {
 
         setEvent(foundEvent || null);
       } catch (err) {
+        setLoading(false)
         console.error("Failed to load event", err);
       } finally {
         setLoading(false);
@@ -110,14 +113,27 @@ const EventPage = () => {
       setQuantity(1);
     } catch (err) {
       console.error(err);
-      toast.error("Booking failed");
+      toast.error("Booking failed", {
+        position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light'
+      });
     } finally {
       setBookingLoading(false);
     }
   };
 
   if (loading) {
-    return <p className="text-center py-20">Loading event...</p>;
+    return (
+      <>
+      <Navbar/>
+      <MainEventSkeleton/>
+      <Footer/>
+      </>
+    );
   }
 
   if (!event) {

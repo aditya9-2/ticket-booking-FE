@@ -3,6 +3,7 @@ import axios from "axios";
 import Card from "../components/Card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import CardSectionSkeleton from "../components/skeletons/CardSectionSkeleton";
 
 interface Event {
   _id: string;
@@ -17,6 +18,7 @@ const CardSection = () => {
 
   const fetchEventData = async () => {
     try {
+      setLoading(true);
       const baseURL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.get(`${baseURL}/event/all`);
       setEvents(res.data.events || []);
@@ -51,7 +53,7 @@ const CardSection = () => {
   };
 
   if (loading) {
-    return <p className="text-center py-10">Loading events...</p>;
+    return <CardSectionSkeleton/>;
   }
 
   return (
