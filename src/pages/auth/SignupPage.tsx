@@ -36,8 +36,8 @@ export const SignupPage = () => {
       }
 
     } catch (error: any) {
-      const message = error?.response?.data?.message || "Something went wrong";
-      toast.error(`Signup failed: ${message}`, {
+      // const message = error?.response?.data?.message || "Something went wrong";
+      toast.error(`Signup failed`, {
         position: 'top-right',
         autoClose: 3500,
         hideProgressBar: false,

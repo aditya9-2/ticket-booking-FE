@@ -52,11 +52,11 @@ const SigninPage = () => {
         progress: undefined,
         theme: 'light'
       });
-      
+
       navigate("/");
 
     } catch (error) {
-      toast.error(`falied to signin ${error}`, {
+      toast.error(`falied to signin`, {
         position: 'top-right',
         autoClose: 3500,
         hideProgressBar: false,
@@ -64,6 +64,7 @@ const SigninPage = () => {
         progress: undefined,
         theme: 'light',
       })
+      console.error(error);
 
     } finally {
       setIsLoading(false);
