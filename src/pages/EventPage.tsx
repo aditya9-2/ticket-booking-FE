@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { toast } from "react-toastify";
 
 interface Section {
   _id: string;
@@ -55,7 +56,14 @@ const EventPage = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to book tickets");
+        toast.error("Please login to book tickets", {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light'
+        });
         return;
       }
 
@@ -76,7 +84,14 @@ const EventPage = () => {
         }
       );
 
-      alert("Booking successful 🎉");
+      toast.success("Booking successful", {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: 'light'
+      });
 
       setEvent((prev) =>
         prev
@@ -95,7 +110,7 @@ const EventPage = () => {
       setQuantity(1);
     } catch (err) {
       console.error(err);
-      alert("Booking failed");
+      toast.error("Booking failed");
     } finally {
       setBookingLoading(false);
     }

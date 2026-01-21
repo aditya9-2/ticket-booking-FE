@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import CustomInput from "../../components/CustomInput";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const SigninPage = () => {
 
@@ -16,13 +17,13 @@ const SigninPage = () => {
       e.preventDefault();
       setIsLoading(true);
 
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signin`,{
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signin`, {
         email,
         password
       });
       const data = res.data;
 
-      if(!data) {
+      if (!data) {
         console.error(`Failed to fetch signin API`);
         setIsLoading(false);
         return;
@@ -30,17 +31,41 @@ const SigninPage = () => {
 
       const token = res.data.token;
 
-      if(!token) {
-        alert("Login failed: No token received");
+      if (!token) {
+        toast.error("Login failed: No token received", {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light',
+        });
         return;
       }
 
       localStorage.setItem("token", token);
+      toast.success(`Login success`, {
+        position: 'top-right',
+        autoClose: 3500,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: 'light'
+      });
+      
       navigate("/");
-      
+
     } catch (error) {
-      
-    } finally{
+      toast.error(`falied to signin ${error}`, {
+        position: 'top-right',
+        autoClose: 3500,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: 'light',
+      })
+
+    } finally {
       setIsLoading(false);
     }
   }
@@ -63,19 +88,19 @@ const SigninPage = () => {
         </div>
 
         <form className="space-y-4" onSubmit={handleLogin}>
-         
+
           <CustomInput
             label="Email Address"
             type="email"
             placeholder="name@company.com"
-            onChange={(e)=> setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <CustomInput
             label="Password"
             type="password"
             placeholder="••••••••"
-            onChange={(e)=> setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <button

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import CustomInput from "../../components/CustomInput"
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify"
 
 export const SignupPage = () => {
   const navigate = useNavigate();
@@ -22,13 +23,29 @@ export const SignupPage = () => {
       });
 
       if (res.status === 201 || res.status === 200) {
-        alert(`Registration success, Please sign in`);
+        toast.success(`Registration success, Please sign in`, {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light',
+          // transition: Bounce,
+        });
         navigate('/signin');
       }
 
     } catch (error: any) {
       const message = error?.response?.data?.message || "Something went wrong";
-      alert(`Signup failed: ${message}`);
+      toast.error(`Signup failed: ${message}`, {
+        position: 'top-right',
+        autoClose: 3500,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: 'light',
+
+      });
       console.error("Signup error:", error instanceof Error ? error.message : undefined);
 
     } finally {

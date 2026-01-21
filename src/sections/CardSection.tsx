@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "../components/Card";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Event {
   _id: string;
@@ -34,7 +35,14 @@ const CardSection = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Please login to book tickets");
+      toast.warn("Please login to book tickets", {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: 'light',
+      });
       navigate("/signin");
       return;
     }
