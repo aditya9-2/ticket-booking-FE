@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { Navigate, Outlet } from "react-router-dom";
-import type { DecodedToken } from "../utils/decodeToken";
+import type { DecodedToken } from "../types/decodeToken";
 
 const UserProtectedRouteProvider = () => {
     const token = localStorage.getItem("token");
