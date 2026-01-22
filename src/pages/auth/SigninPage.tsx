@@ -3,6 +3,8 @@ import CustomInput from "../../components/CustomInput";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+import type { DecodedToken } from "../../types/decodeToken";
 
 const SigninPage = () => {
 
@@ -44,6 +46,7 @@ const SigninPage = () => {
       }
 
       localStorage.setItem("token", token);
+
       toast.success(`Login success`, {
         position: 'top-right',
         autoClose: 3500,
@@ -53,7 +56,13 @@ const SigninPage = () => {
         theme: 'light'
       });
 
-      navigate("/");
+      const decoded = jwtDecode<DecodedToken>(token);
+
+      if (decoded.roleId === 1) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
 
     } catch (error) {
       toast.error(`falied to signin`, {
