@@ -9,8 +9,13 @@ import EventPage from './pages/EventPage'
 import HomePage from './pages/Homepage'
 import { Route, Routes } from "react-router"
 import MyBookingPage from './pages/MyBookingPage'
-import ProtectedRouteProvider from './provider/ProtectedRouteProvider'
 import { ToastContainer } from 'react-toastify'
+import AdminHomePage from './pages/admin/AdminHomePage'
+import UserProtectedRouteProvider from './provider/UserProtectedRouteProvider'
+import AdminProtectedRouteProvider from './provider/AdminProtectedRouteProvider'
+
+
+
 function App() {
 
 
@@ -25,14 +30,21 @@ function App() {
         <Route path='/contact' element={<ContactPage />} />
         <Route path='/events' element={<AllEventsPage />} />
 
-        {/* protected routes */}
-        <Route element={<ProtectedRouteProvider />}>
+
+        {/* user protected routes */}
+        <Route element={<UserProtectedRouteProvider />}>
           <Route path='/event/:eventId' element={<EventPage />} />
           <Route path='/my-bookings' element={<MyBookingPage />} />
         </Route>
+
+        {/* Admin protected routes */}
+        <Route element={<AdminProtectedRouteProvider />} >
+          <Route path='/admin' element={<AdminHomePage />} />
+        </Route>
+
       </ Routes>
 
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   )
 }
