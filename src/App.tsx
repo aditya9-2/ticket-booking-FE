@@ -13,6 +13,10 @@ import { ToastContainer } from 'react-toastify'
 import AdminHomePage from './pages/admin/AdminHomePage'
 import UserProtectedRouteProvider from './provider/UserProtectedRouteProvider'
 import AdminProtectedRouteProvider from './provider/AdminProtectedRouteProvider'
+import AdminEventsPage from './pages/admin/AdminEventsPage'
+import CreateEventPage from './pages/admin/CreateEventPage'
+import EditEventPage from './pages/admin/EditEventPage'
+import AdminBookingsPage from './pages/admin/AdminBookingsPage'
 
 
 
@@ -40,6 +44,10 @@ function App() {
         {/* Admin protected routes */}
         <Route element={<AdminProtectedRouteProvider />} >
           <Route path='/admin' element={<AdminHomePage />} />
+          <Route path="/admin/events" element={<AdminEventsPage />} />
+          <Route path="/admin/events/create" element={<CreateEventPage />} />
+          <Route path="/admin/events/edit/:eventId" element={<EditEventPage />} />
+          <Route path="/admin/bookings" element={<AdminBookingsPage />} />
         </Route>
 
       </ Routes>
