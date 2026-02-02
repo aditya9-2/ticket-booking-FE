@@ -12,15 +12,17 @@ interface Section {
     name: string;
     price: number;
     remaining: number;
-    posterUrl?: string;
 }
 
 interface Events {
     _id: string;
     name: string;
+    date: string;       
+    posterUrl?: string;
     createdAt: string;
     sections: Section[];
 }
+
 const SKELETON_COUNT = 6;
 
 const AllEventsPage = () => {
@@ -36,38 +38,33 @@ const AllEventsPage = () => {
             const res = await axios.get(`${baseURL}/event/all`);
             const data = res.data;
 
-
-            setEvents(data.events || null);
+            setEvents(data.events || []);
         } catch (err) {
-            setLoading(false);
-            toast.error(`failed to load events`, {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                pauseOnHover: true,
-                progress: undefined,
-                theme: 'light'
-            })
+            toast.error(`Failed to load events`);
             console.error("Failed to load event", err);
         } finally {
             setLoading(false);
         }
-
     }
 
     useEffect(() => {
         fetchEvents();
     }, []);
 
-    if (!events) {
-
-        return <p className="text-center py-20">Event not found</p>;
+    if (!loading && events.length === 0) {
+        return (
+            <>
+                <Navbar />
+                <p className="text-center py-20 text-gray-500">No upcoming events found</p>
+                <Footer />
+            </>
+        );
     }
 
     return (
         <>
             <Navbar />
-            <div className="max-w-7xl mx-auto px-6 py-12">
+            <div className="max-w-7xl mx-auto px-6 py-12 min-h-[60vh]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                     {loading ?
                         Array.from({ length: SKELETON_COUNT }).map((_, idx) => (
@@ -76,9 +73,15 @@ const AllEventsPage = () => {
                         : events.map((event: Events) => (
                             <Card
                                 key={event._id}
-                                image={event.sections[0]?.posterUrl || ""}
+                                image={event.posterUrl || ""}
                                 title={event.name}
-                                date={new Date(event.createdAt).toDateString()}
+                                date={new Date(event.date).toLocaleDateString('en-IN', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
                                 onBook={() => navigate(`/event/${event._id}`)}
                             />
                         ))}
