@@ -59,7 +59,7 @@ const SigninPage = () => {
       const decoded = jwtDecode<DecodedToken>(token);
 
       if (decoded.roleId === 1) {
-        navigate("/admin");
+        navigate("/");
       } else {
         navigate("/");
       }
