@@ -12,6 +12,7 @@ interface Section {
     name: string;
     price: number;
     remaining: number;
+    posterUrl?: string;
 }
 
 interface Events {
@@ -75,7 +76,7 @@ const AllEventsPage = () => {
                         : events.map((event: Events) => (
                             <Card
                                 key={event._id}
-                                image={`/events/${event._id}.png`}
+                                image={event.sections[0]?.posterUrl || ""}
                                 title={event.name}
                                 date={new Date(event.createdAt).toDateString()}
                                 onBook={() => navigate(`/event/${event._id}`)}
