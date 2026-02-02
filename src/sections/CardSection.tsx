@@ -70,11 +70,13 @@ const CardSection = () => {
           >
             <Card
               title={event.name}
-              // Fixed: Using the event's actual date
-              date={new Date(event.date).toLocaleDateString('en-IN', {
+              date={new Date(event.date).toLocaleString('en-IN', {
                 day: 'numeric',
                 month: 'short',
-                year: 'numeric'
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
               })}
               // Fixed: Using the root posterUrl from R2
               image={event.posterUrl || "https://placehold.co/600x400?text=No+Poster"}
