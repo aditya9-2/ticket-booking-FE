@@ -10,6 +10,7 @@ import MyBookingsSkeleton from "../components/skeletons/MyBookingsSkeleton";
 interface Booking {
   _id: string;
   eventName: string;
+  eventDate: string;
   sectionName: string;
   quantity: number;
   priceAtBooking: number;
@@ -99,6 +100,7 @@ const MyBookingPage = () => {
               <TicketCard
                 key={b._id}
                 eventName={b.eventName}
+                eventDate={b.eventDate}
                 sectionName={b.sectionName}
                 quantity={b.quantity}
                 totalPrice={b.priceAtBooking * b.quantity}

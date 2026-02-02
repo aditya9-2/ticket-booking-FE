@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -16,12 +16,15 @@ interface Section {
 interface Event {
   _id: string;
   name: string;
+  date: string;       // Actual Event Date
+  posterUrl?: string; // Root level Poster
   createdAt: string;
   sections: Section[];
 }
 
 const EventPage = () => {
   const { eventId } = useParams();
+  const navigate = useNavigate();
 
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,22 +38,20 @@ const EventPage = () => {
       try {
         setLoading(true);
         const baseURL = import.meta.env.VITE_API_BASE_URL;
-        const res = await axios.get(`${baseURL}/event/all`);
-
-        const foundEvent = res.data.events.find(
-          (e: Event) => e._id === eventId
-        );
-
-        setEvent(foundEvent || null);
+        
+        // Use the specific get-event-by-id endpoint for better performance
+        const res = await axios.get(`${baseURL}/event/${eventId}`);
+        
+        setEvent(res.data.event || null);
       } catch (err) {
-        setLoading(false)
         console.error("Failed to load event", err);
+        toast.error("Event not found");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEvent();
+    if (eventId) fetchEvent();
   }, [eventId]);
 
   const handleBooking = async () => {
@@ -59,14 +60,14 @@ const EventPage = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.error("Please login to book tickets", {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: 'light'
-        });
+        toast.warn("Please login to book tickets");
+        navigate("/signin");
+        return;
+      }
+
+      // Check if event has already passed (safety check)
+      if (new Date(event.date) < new Date()) {
+        toast.error("Booking closed: This event has already happened.");
         return;
       }
 
@@ -87,15 +88,9 @@ const EventPage = () => {
         }
       );
 
-      toast.success("Booking successful", {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: 'light'
-      });
+      toast.success("Booking successful!");
 
+      // Update local state to reflect reduced capacity
       setEvent((prev) =>
         prev
           ? {
@@ -111,16 +106,9 @@ const EventPage = () => {
 
       setSelectedSection(null);
       setQuantity(1);
-    } catch (err) {
-      console.error(err);
-      toast.error("Booking failed", {
-        position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: 'light'
-      });
+    } catch (err: any) {
+      const errMsg = err.response?.data?.message || "Booking failed";
+      toast.error(errMsg);
     } finally {
       setBookingLoading(false);
     }
@@ -129,22 +117,28 @@ const EventPage = () => {
   if (loading) {
     return (
       <>
-      <Navbar/>
-      <MainEventSkeleton/>
-      <Footer/>
+        <Navbar />
+        <MainEventSkeleton />
+        <Footer />
       </>
     );
   }
 
   if (!event) {
-    return <p className="text-center py-20">Event not found</p>;
+    return (
+        <>
+            <Navbar />
+            <div className="text-center py-20 min-h-[50vh]">
+                <h2 className="text-2xl font-bold">Event not found</h2>
+                <button onClick={() => navigate('/')} className="mt-4 text-blue-600 underline">Back to Home</button>
+            </div>
+            <Footer />
+        </>
+    );
   }
 
   const minPrice = Math.min(...event.sections.map((s) => s.price));
-
-  const displayPrice = selectedSection
-    ? selectedSection.price * quantity
-    : minPrice;
+  const displayPrice = selectedSection ? selectedSection.price * quantity : minPrice;
 
   return (
     <>
@@ -155,11 +149,20 @@ const EventPage = () => {
         <div>
           <h1 className="text-4xl font-extrabold mb-4">{event.name}</h1>
 
-          <p className="text-gray-500 mb-8">
-            {new Date(event.createdAt).toDateString()}
-          </p>
+          {/* Fixed: Show actual event Date/Time */}
+          <div className="flex items-center gap-2 text-gray-600 mb-8 font-medium">
+             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+             {new Date(event.date).toLocaleDateString('en-IN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+             })}
+          </div>
 
-          <h2 className="text-xl font-semibold mb-4">Available Tickets</h2>
+          <h2 className="text-xl font-semibold mb-4">Select Category</h2>
 
           <div className="space-y-4">
             {event.sections.map((section) => {
@@ -174,91 +177,87 @@ const EventPage = () => {
                     setSelectedSection(section);
                     setQuantity(1);
                   }}
-                  className={`flex justify-between items-center border rounded-xl p-4 transition
+                  className={`flex justify-between items-center border-2 rounded-2xl p-5 transition-all
                     ${soldOut
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer hover:shadow-md"
+                      ? "opacity-50 cursor-not-allowed bg-gray-50"
+                      : "cursor-pointer hover:border-black"
                     }
-                    ${isSelected ? "border-black shadow-md" : ""}
+                    ${isSelected ? "border-black bg-gray-50 shadow-sm" : "border-gray-100"}
                   `}
                 >
                   <div>
-                    <p className="font-semibold">{section.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {soldOut
-                        ? "Sold out"
-                        : `${section.remaining} seats left`}
+                    <p className="font-bold text-lg">{section.name}</p>
+                    <p className={`text-sm ${section.remaining < 10 ? "text-red-500 font-medium" : "text-gray-500"}`}>
+                      {soldOut ? "Sold out" : `${section.remaining} tickets left`}
                     </p>
                   </div>
 
-                  <p className="font-bold">₹{section.price}</p>
+                  <p className="font-black text-xl">₹{section.price}</p>
                 </div>
               );
             })}
           </div>
 
-          {/* QUANTITY */}
+          {/* QUANTITY PICKER */}
           {selectedSection && (
-            <div className="mt-8 border rounded-xl p-4 space-y-4">
-              <h3 className="font-semibold text-lg">
-                Selected: {selectedSection.name}
-              </h3>
-
-              <div className="flex items-center gap-4">
-                <span className="font-medium">Quantity</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={selectedSection.remaining}
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      Math.min(
-                        selectedSection.remaining,
-                        Math.max(1, Number(e.target.value))
-                      )
-                    )
-                  }
-                  className="w-20 border rounded-lg px-2 py-1"
-                />
+            <div className="mt-8 border-2 border-dashed border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
+              <div className="flex justify-between items-center">
+                <h3 className="font-bold text-lg">Quantity</h3>
+                <div className="flex items-center gap-4 bg-gray-100 rounded-xl p-1">
+                  <button 
+                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                    className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold"
+                  >-</button>
+                  <span className="font-bold w-6 text-center">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(prev => Math.min(selectedSection.remaining, prev + 1))}
+                    className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold"
+                  >+</button>
+                </div>
               </div>
-
-              <p className="text-gray-600">
-                ₹{selectedSection.price} × {quantity}
+              <p className="text-sm text-gray-500 italic text-right">
+                Max available: {selectedSection.remaining}
               </p>
             </div>
           )}
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="flex flex-col items-center gap-6">
+        {/* RIGHT SIDE (Poster & Checkout) */}
+        <div className="flex flex-col items-center gap-8">
+          {/* Fixed: Use root level posterUrl */}
           <img
-            src={`/events/${event._id}.png`}
+            src={event.posterUrl || "https://placehold.co/600x800?text=Event+Poster"}
             alt={event.name}
-            className="w-full max-w-md rounded-2xl shadow-xl"
-            onError={(e) => {
-              e.currentTarget.src = "/events/default.png";
-            }}
+            className="w-full max-w-sm rounded-4xl shadow-2xl border-8 border-white object-cover aspect-3/4"
           />
 
-          <div className="w-full max-w-md bg-gray-50 rounded-2xl p-6 shadow">
-            <p className="text-sm text-gray-500 mb-1">
-              {selectedSection ? "Total price" : "Starting from"}
-            </p>
-
-            <p className="text-3xl font-bold mb-4">₹{displayPrice}</p>
+          <div className="w-full max-w-sm bg-black text-white rounded-4xl p-8 shadow-2xl">
+            <div className="flex justify-between items-end mb-6">
+                <div>
+                    <p className="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">
+                        {selectedSection ? "Total Payable" : "Starting Price"}
+                    </p>
+                    <p className="text-4xl font-black italic">₹{displayPrice.toLocaleString()}</p>
+                </div>
+                {selectedSection && <p className="text-xs text-gray-400 font-medium italic">Incl. all taxes</p>}
+            </div>
 
             <button
               disabled={!selectedSection || bookingLoading}
               onClick={handleBooking}
-              className={`w-full py-3 rounded-full font-semibold
+              className={`w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-95
                 ${selectedSection
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  ? "bg-green-500 text-black hover:bg-green-400"
+                  : "bg-gray-800 text-gray-500 cursor-not-allowed"
                 }
               `}
             >
-              {bookingLoading ? "Booking..." : "Confirm Booking"}
+              {bookingLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                    Processing...
+                </span>
+              ) : "Secure My Spot"}
             </button>
           </div>
         </div>

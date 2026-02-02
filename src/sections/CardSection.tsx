@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CardSectionSkeleton from "../components/skeletons/CardSectionSkeleton";
 
+// Updated Interface to match the new schema
 interface Event {
   _id: string;
   name: string;
+  date: string;       // Actual event date
+  posterUrl?: string; // Root level poster
   createdAt: string;
 }
 
@@ -40,9 +43,6 @@ const CardSection = () => {
       toast.warn("Please login to book tickets", {
         position: 'top-right',
         autoClose: 3000,
-        hideProgressBar: false,
-        pauseOnHover: true,
-        progress: undefined,
         theme: 'light',
       });
       navigate("/signin");
@@ -53,11 +53,15 @@ const CardSection = () => {
   };
 
   if (loading) {
-    return <CardSectionSkeleton/>;
+    return <CardSectionSkeleton />;
   }
+
+  // If no events exist, don't show an empty marquee
+  if (events.length === 0) return null;
 
   return (
     <div className="w-full bg-gray-100 py-10 overflow-hidden">
+      {/* Infinite Marquee Container */}
       <div className="flex w-max animate-marquee">
         {[...events, ...events].map((event, index) => (
           <div
@@ -66,8 +70,14 @@ const CardSection = () => {
           >
             <Card
               title={event.name}
-              date={new Date(event.createdAt).toLocaleDateString()}
-              image={`/events/${event._id}.png`}
+              // Fixed: Using the event's actual date
+              date={new Date(event.date).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+              })}
+              // Fixed: Using the root posterUrl from R2
+              image={event.posterUrl || "https://placehold.co/600x400?text=No+Poster"}
               onBook={() => handleBook(event._id)}
             />
           </div>
