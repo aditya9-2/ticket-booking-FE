@@ -38,10 +38,10 @@ const EventPage = () => {
       try {
         setLoading(true);
         const baseURL = import.meta.env.VITE_API_BASE_URL;
-        
+
         // Use the specific get-event-by-id endpoint for better performance
         const res = await axios.get(`${baseURL}/event/${eventId}`);
-        
+
         setEvent(res.data.event || null);
       } catch (err) {
         console.error("Failed to load event", err);
@@ -126,14 +126,14 @@ const EventPage = () => {
 
   if (!event) {
     return (
-        <>
-            <Navbar />
-            <div className="text-center py-20 min-h-[50vh]">
-                <h2 className="text-2xl font-bold">Event not found</h2>
-                <button onClick={() => navigate('/')} className="mt-4 text-blue-600 underline">Back to Home</button>
-            </div>
-            <Footer />
-        </>
+      <>
+        <Navbar />
+        <div className="text-center py-20 min-h-[50vh]">
+          <h2 className="text-2xl font-bold">Event not found</h2>
+          <button onClick={() => navigate('/')} className="mt-4 text-blue-600 underline">Back to Home</button>
+        </div>
+        <Footer />
+      </>
     );
   }
 
@@ -149,17 +149,19 @@ const EventPage = () => {
         <div>
           <h1 className="text-4xl font-extrabold mb-4">{event.name}</h1>
 
-          {/* Fixed: Show actual event Date/Time */}
           <div className="flex items-center gap-2 text-gray-600 mb-8 font-medium">
-             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-             {new Date(event.date).toLocaleDateString('en-IN', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-             })}
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {new Date(event.date).toLocaleString('en-IN', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            })}
           </div>
 
           <h2 className="text-xl font-semibold mb-4">Select Category</h2>
@@ -204,12 +206,12 @@ const EventPage = () => {
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-lg">Quantity</h3>
                 <div className="flex items-center gap-4 bg-gray-100 rounded-xl p-1">
-                  <button 
+                  <button
                     onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                     className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold"
                   >-</button>
                   <span className="font-bold w-6 text-center">{quantity}</span>
-                  <button 
+                  <button
                     onClick={() => setQuantity(prev => Math.min(selectedSection.remaining, prev + 1))}
                     className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold"
                   >+</button>
@@ -233,13 +235,13 @@ const EventPage = () => {
 
           <div className="w-full max-w-sm bg-black text-white rounded-4xl p-8 shadow-2xl">
             <div className="flex justify-between items-end mb-6">
-                <div>
-                    <p className="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">
-                        {selectedSection ? "Total Payable" : "Starting Price"}
-                    </p>
-                    <p className="text-4xl font-black italic">₹{displayPrice.toLocaleString()}</p>
-                </div>
-                {selectedSection && <p className="text-xs text-gray-400 font-medium italic">Incl. all taxes</p>}
+              <div>
+                <p className="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">
+                  {selectedSection ? "Total Payable" : "Starting Price"}
+                </p>
+                <p className="text-4xl font-black italic">₹{displayPrice.toLocaleString()}</p>
+              </div>
+              {selectedSection && <p className="text-xs text-gray-400 font-medium italic">Incl. all taxes</p>}
             </div>
 
             <button
@@ -254,8 +256,8 @@ const EventPage = () => {
             >
               {bookingLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                    Processing...
+                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                  Processing...
                 </span>
               ) : "Secure My Spot"}
             </button>
